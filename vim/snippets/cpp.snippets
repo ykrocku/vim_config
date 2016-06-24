@@ -1,4 +1,11 @@
 # Read File Into Vector
+
+#include <...>
+snippet in
+	#include <${1:iostream}>${2}
+snippet us 
+	using namespace ${1:std};${2}
+
 snippet readfile
 	std::vector<char> v;
 	if (FILE *${2:fp} = fopen(${1:"filename"}, "r")) {

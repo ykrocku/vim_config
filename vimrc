@@ -42,8 +42,8 @@ set nowrap
 "设置增量搜索
 set incsearch
 "设置文件备份
-set backup
-set backupext=.bak
+"set backup
+"set backupext=.bak
 "设置自动隐藏缓冲区，在tag跳转时非常有用，不会再提示文件未保存
 set hidden
 "在normal模式下启用鼠标（可以用来改变窗口的大小）
@@ -101,6 +101,7 @@ function! CodingStyleInit()
 	setl expandtab
 	"设置在插入模式时，按tab键也是4个空格
 	setl tabstop=4
+    setl softtabstop=4
 endfunction
 autocmd! filetype c,cpp,python call CodingStyleInit()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -146,21 +147,23 @@ else
 endif
 "ESC最常用，但是也是最远的键，这可能是vimer最痛苦的事
 inoremap ,, <esc>
-"模仿Source Insight的缩进快捷方式。
-imap <F9> <ESC><<i
-map <silent> <F9> <<
+"打开quick fix窗口
+imap <F9> <ESC>:copen<CR>
+map <silent> <F9> :copen<CR>
 "ubuntu10.04中，F10是弹出主菜单的快捷键，所以需要隐藏菜单栏。
-imap <F10> <ESC>>>i
-map <silent> <F10> >>
+imap <F10> <ESC>:cn<CR>
+map <silent> <F10> :cn<CR>
 
 "自动缩进整个文档(缺点：会改变jumps列表)
 map <leader>ff <esc>gg=G<C-O><C-O>
 "能减少一点输入到替换
 nmap <C-h> :%s/<C-R>=expand("<cword>")<CR>/
-nmap <C-j> :grep --exclude-dir=.svn "<C-R>=expand("<cword>")<CR>" -r .
+nmap <C-j> :grep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI .
+nmap <C-l> :lgrep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI .
 "vmap <C-h> :normal! gv"ry<CR>:%s/<C-R>=@r<CR>/
 vmap <C-h> :normal! gvy<CR>:%s/<C-R>=@<CR>/
-vmap <C-j> :normal! gvy<CR>:grep --exclude-dir=.svn "<C-R>=@<CR>" -r .
+vmap <C-j> :normal! gvy<CR>:grep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=@<CR>" -rI .
+vmap <C-l> :normal! gvy<CR>:lgrep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=@<CR>" -rI .
 "插入当前日期
 inoremap $rq <C-R>=strftime("%Y-%m-%d")<CR>
 "插入当前编辑的文件名
@@ -174,15 +177,10 @@ map <F2> :set cul<CR>:sleep 500m<CR>:set nocul<CR>
 let Tlist_Exit_OnlyWindow=1
 let Tlist_Show_One_File=1
 set updatetime=500
-"在当前窗口和TagList窗口间切换
+"在当前窗口和TagBar窗口间切换
 map <F4> :call JumpToTagList()<CR>
-map <S-F4> :TlistToggle<CR>
 function! JumpToTagList()
-	if g:TagList_title==bufname("%")
-	    exe 'wincmd p'
-	else
-	    exe 'TlistOpen'
-	endif
+    exe 'TagbarToggle'
 endfunction
 
 "OmniCppComplete设置
@@ -323,3 +321,4 @@ endfunction
 
 
 " vim:ts=4:sw=4:et
+
