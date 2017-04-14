@@ -48,6 +48,8 @@ set incsearch
 set hidden
 "在normal模式下启用鼠标（可以用来改变窗口的大小）
 set mouse=n
+set splitright
+set splitbelow
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Session和Viminfo相关
 "set sessionoptions+=
