@@ -105,7 +105,7 @@ function! CodingStyleInit()
 	setl tabstop=4
     setl softtabstop=4
 endfunction
-autocmd! filetype c,cpp,python call CodingStyleInit()
+autocmd! filetype c,cpp,markdown,python call CodingStyleInit()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "着色相关
 "开启语法高亮
@@ -160,12 +160,15 @@ map <silent> <F10> :cn<CR>
 map <leader>ff <esc>gg=G<C-O><C-O>
 "能减少一点输入到替换
 nmap <C-h> :%s/<C-R>=expand("<cword>")<CR>/
-nmap <C-j> :grep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI .
-nmap <C-l> :lgrep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI .
+nmap <C-j> :grep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.map --exclude \*.htm --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI .
+nmap <C-l> :lgrep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.map --exclude \*.htm --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI .
+nmap <C-k> :grep --exclude-dir=.svn --exclude \*.o --exclude \*.swp --exclude \*.map --exclude \*.htm --exclude \*.bak "<C-R>=expand("<cword>")<CR>" -rI <C-R>=expand("%:h")<CR>
+nmap <C-e> :e <C-R>=expand("%:h")<CR>/
 "vmap <C-h> :normal! gv"ry<CR>:%s/<C-R>=@r<CR>/
 vmap <C-h> :normal! gvy<CR>:%s/<C-R>=@<CR>/
-vmap <C-j> :normal! gvy<CR>:grep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=@<CR>" -rI .
-vmap <C-l> :normal! gvy<CR>:lgrep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.bak "<C-R>=@<CR>" -rI .
+vmap <C-j> :normal! gvy<CR>:grep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.map --exclude \*.htm --exclude \*.bak "<C-R>=@<CR>" -rI .
+vmap <C-l> :normal! gvy<CR>:lgrep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.map --exclude \*.htm --exclude \*.bak "<C-R>=@<CR>" -rI .
+vmap <C-k> :normal! gvy<CR>:grep --exclude-dir=.svn  --exclude \*.o --exclude \*.swp --exclude \*.map --exclude \*.htm --exclude \*.bak "<C-R>=@<CR>" -rI <C-R>=expand("%:h")<CR>
 "插入当前日期
 inoremap $rq <C-R>=strftime("%Y-%m-%d")<CR>
 "插入当前编辑的文件名
