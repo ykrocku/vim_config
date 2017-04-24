@@ -173,6 +173,8 @@ vmap <C-k> :normal! gvy<CR>:grep --exclude-dir=.svn  --exclude \*.o --exclude \*
 inoremap $rq <C-R>=strftime("%Y-%m-%d")<CR>
 "插入当前编辑的文件名
 inoremap $fn <C-R>=bufname("%")<CR>
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 
 "高亮光标所在行1s
 map <F2> :set cul<CR>:sleep 500m<CR>:set nocul<CR>
