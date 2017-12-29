@@ -56,21 +56,31 @@ set splitbelow
 nmap <leader>sp :call SaveProject()<CR>
 nmap <leader>lp :call LoadProject()<CR>
 function! LoadProject()
-	cd %:h          "切换vim到PWD到当前目录(并设置其为工程起始目录)
+    cd %:h          "切换vim到PWD到当前目录(并设置其为工程起始目录)
 	let g:prj_dir=expand("%:p:h")
+    echo "Load prj"
+    echo g:prj_dir
 	so session.vim
 	rviminfo viminfo.vim
+
+    let &tags=g:prj_dir."/tags"
+    cs add cscope.out
+
 	exe 'syntax enable'
+    cd ../../
 	"TODO taglist window not restored properly(set background=dark caused "this)
 endfunction
 au VimEnter 0_0_project call LoadProject()
 
 function! SaveProject()
 	"TODO 切换回工程起始目录(可能手动执行了cd到其他目录)
+    cd `=g:prj_dir`
+    echo "Save prj"
+    let g:prj_dir
 	mksession! session.vim
 	wviminfo! viminfo.vim
 	echo "Write session done!"
-	exe "qall"
+    exe "qall"
 endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "状态栏设置
@@ -104,7 +114,7 @@ function! CodingStyleInit()
 	"设置在插入模式时，按tab键也是4个空格
 	setl tabstop=4
     setl softtabstop=4
-"   set iskeyword-=:
+    "set iskeyword-=:
 endfunction
 autocmd! filetype c,cpp,markdown,python call CodingStyleInit()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -206,10 +216,6 @@ inoremap <expr> <C-K> pumvisible()?"\<PageUp>\<C-P>\<C-N>":"\<C-K>"
 "输入模式下的撤销
 inoremap <C-Z> <esc>ui
 
-"ctags
-if filereadable("/usr/include/tags")
-	set tags=./tags,./TAGS,tags,TAGS,/usr/include/tags
-endif
 "cscope设置
 if has("cscope")
 	"set csprg=/usr/local/bin/cscope
@@ -330,6 +336,14 @@ function! PreviewWord()
   endif
 endfunction
 
+"execute pathogen#infect()
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
 
 " vim:ts=4:sw=4:et
 

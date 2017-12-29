@@ -7,6 +7,7 @@
 #
 #
 
+PRJ_ROOT_FOLDER="prj__"
 PRJ_FILE="0_0_project"
 PRJ_FILE_CONTENT="This is help file\nExecute 'vim project' to enter project\nCreate project files done!"
 CREATE="create"
@@ -21,49 +22,61 @@ VIM_INFO_FILE="viminfo.vim"
 Usage()
 {
 	echo "Usage:"
-	echo `basename $0` $CREATE: "create project"
+	echo `basename $0` $CREATE: "create project NAME folder1 folder2 ... foldern"
 	echo `basename $0` $UPDATE: "update project"
 	echo `basename $0` $REMOVE: "remove project"
 }
 #
-CreateProject()
+CreateProject() 
 {
-	if [ -f $CTAG_FILE ]
-	then
-		echo $CTAG_FILE "exist, Skip!"
-	else
-		ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f $CTAG_FILE
-	fi
+#project.sh create NAME f1 f2 f3 ... fn
+    PRJ_FOLDER=$PRJ_ROOT_FOLDER/$2
+    echo "Project folder:" $PRJ_FOLDER
 
-	if [ -f $CSCOPE_FILE ]
-	then
-		echo $CSCOPE_FILE "exist, Skip"
-	else
-		cscope -Rbq
-	fi
+    SRC_FOLDER_LIST=""
+    ARGV=($@)
+    for (( j=2; j<$#; j++))
+    do
+	SRC_FOLDER_LIST+=`readlink -f ${ARGV[j]}`" "
+    done
 
-	touch $PRJ_FILE
-	echo -e $PRJ_FILE_CONTENT > $PRJ_FILE
-	touch $VIM_SESSSION_FILE
-	touch $VIM_INFO_FILE
+
+    mkdir -p $PRJ_FOLDER 
+    pushd $PRJ_FOLDER  1>/dev/null
+    if [[ -f $CTAG_FILE || -f $CSCOPE_FILES ]]
+    then
+	    echo $CTAG_FILE "or" $CSCOPE_FILES "already exist!"
+	    return
+    fi
+
+    for SRC_FOLDER in $SRC_FOLDER_LIST
+    do
+    	echo "Indexing " $SRC_FOLDER "..."
+	ctags -aR $SRC_FOLDER --c++-kinds=+p --fields=+iaS --extra=+q -f $CTAG_FILE
+	find $SRC_FOLDER -name '*.h' -o -name '*.c' -o -name '*.cpp' -o -name '*.java' >> cscope.files
+    done
+    cscope -bq
+
+
+    touch $PRJ_FILE
+    echo -e $PRJ_FILE_CONTENT > $PRJ_FILE
+    echo  $@ >> $PRJ_FILE
+    touch $VIM_SESSSION_FILE
+    touch $VIM_INFO_FILE
+    popd 1>/dev/null
 }
 
 #
 RM_FLAG="-f"
 RemoveProject()
 {
-	rm $RM_FLAG $PRJ_FILE
-	rm $RM_FLAG $CTAG_FILE
-	rm $RM_FLAG $CSCOPE_FILES
-	rm $RM_FLAG $VIM_INFO_FILE
-	rm $RM_FLAG $VIM_SESSSION_FILE
+    echo "TODO"
 }
+
 #
 UpdateProject()
 {
-	rm $RM_FLAG $CTAG_FILE
-	rm $RM_FLAG $CSCOPE_FILES
-	CreateProject
+    echo "TODO"
 }
 if [ ! -n "$1" ]
 then
@@ -71,8 +84,12 @@ then
 	exit
 elif [ $1 == $CREATE ]
 then
-	#echo "Start Create Project..."
-	CreateProject
+	if [ ! -n "$2" ]
+	then
+	    Usage
+	    exit
+	fi
+	CreateProject $@
 elif [ $1 == $UPDATE ]
 then
 	#echo "Start Update Project..."
